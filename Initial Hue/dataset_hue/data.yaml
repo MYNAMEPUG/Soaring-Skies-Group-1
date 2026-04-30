@@ -1,0 +1,13 @@
+train: ../train/images
+val: ../valid/images
+test: ../test/images
+
+nc: 9
+names: ['Cross', 'Hexagon', 'Octagon', 'Pentagon', 'Quarter Circle', 'Rectangle', 'Semi Circle', 'Square', 'Triangle']
+
+roboflow:
+  workspace: lunivas-workspace-lhzjm
+  project: soaring-skies-imaging-w8i8f
+  version: 3
+  license: CC BY 4.0
+  url: https://universe.roboflow.com/lunivas-workspace-lhzjm/soaring-skies-imaging-w8i8f/dataset/3
