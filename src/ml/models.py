@@ -1,7 +1,7 @@
 from ultralytics import YOLO
 import cv2
-from src.helper.math_func import calculate3Ddist
-from src.ml.detection import DetectionModelOutput
+from helper.math_func import calculate3Ddist
+from detection import DetectionModelOutput
 
 
 def yolov26(image_path:str =""):

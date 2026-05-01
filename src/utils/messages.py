@@ -1,8 +1,8 @@
 import asyncio
 from pymavlink import mavutil
 from pymavlink.dialects.v20 import common
-from src.utils.logger import log_custom, log_message, log_system, bcolors, logger
-import src.helper.file_read as reader
+from utils.logger import log_custom, log_message, log_system, bcolors, logger
+import helper.file_read as reader
 
 
 class MessageStream:

@@ -2,13 +2,13 @@ import asyncio
 from pymavlink import mavutil
 from pymavlink.dialects.v20 import common
 
-from src.utils.drone import Drone, DroneProperties
-import src.utils.mode as mode
-from src.utils.mission import Mission
-from src.utils.logger import log_system
-from src.utils.takeoff import return_to_launch
+from utils.drone import Drone, DroneProperties
+import utils.mode as mode
+from utils.mission import Mission
+from utils.logger import log_system
+from utils.takeoff import return_to_launch
 
-from src.helper.file_read import read_waypoints
+from helper.file_read import read_waypoints
 import time
 
 

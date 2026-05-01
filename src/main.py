@@ -1,21 +1,21 @@
 import asyncio
 
-from src.utils.circuittimetrial import CircuitTimeTrial
+from utils.circuittimetrial import CircuitTimeTrial
 from utils.drone import Drone
 from utils.logger import log_system
 from utils.mission import Mission
 from utils.takeoff import takeoff
 from utils.geofence import Geofence
-
+from utils.survey import Survey
 from helper.file_read import read_config_file
 
 
 
 async def main():
     drone = Drone()
-    drone.initialize_drone(parametersFile='info_files/settings.txt', configFile='info_files/config.txt')
+    drone.initialize_drone(parametersFile='files/settings.txt', configFile='files/config.txt')
     # mission = Mission(drone=drone, waypointsFile='info_files/waypoints.txt')
-    fence = Geofence(drone=drone, geofenceFile='info_files/test_files/testingfence.txt')
+    fence = Geofence(drone=drone, geofenceFile='files/fence.txt')
 
     await asyncio.gather(
         drone.start_background_processes(),
@@ -54,29 +54,7 @@ async def mission_picker(drone: Drone):
             missions.append(int(mission_config))
             break
 
-    print(f'MISSIONS = {missions}')
-    mission_list = {
-        0: "NO MISSION",
-        1: "WAYPOINT NAVIGATION",
-        2: "CIRCUIT TIME TRIAL",
-    }
-
-    mission_files = read_config_file('info_files/mission_files.txt')
-
-    while missions.__len__() != 0:
-        current_mission = missions[0]
-        print(f"starting mission {mission_list[current_mission]}")
-        missions.remove(current_mission)
-        read_file = mission_files[f'{current_mission}']
-
-        mission_rtl = True if missions.__len__() == 0 else False  # if the # of missions remaining is zero, then we return to launch
-
-        match current_mission:
-            case 0:
-                pass
-            case 1:
-                circuitTimeTrial = CircuitTimeTrial(drone, read_file)
-                await circuitTimeTrial.upload_mission(rtl=mission_rtl)
-            case 2:
-                machine_learning = survey(drone, read_file)
-                await machine_learning.upload_mission(rtl=mission_rtl)
+    #circuitTimeTrial = CircuitTimeTrial(drone, 'files/waypoints.txt')
+    #await circuitTimeTrial.upload_mission(rtl=mission_rtl)
+    machine_learning = Survey(drone, 'files/waypoints.txt')
+    await machine_learning.upload_mission(rtl=True)

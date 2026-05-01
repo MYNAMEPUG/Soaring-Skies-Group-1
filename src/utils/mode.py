@@ -1,5 +1,5 @@
 import asyncio
-from src.utils.drone import Drone
+from utils.drone import Drone
 from pymavlink.dialects.v20 import common
 
 # USE mavutil.mode_mapping_rover for mode numbers

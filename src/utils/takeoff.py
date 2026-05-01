@@ -1,9 +1,9 @@
 import asyncio
 from pymavlink.dialects.v20 import common
 
-from src.utils.drone import Drone
-import src.utils.mode as mode
-from src.utils.logger import log_system, log_success
+from utils.drone import Drone
+import utils.mode as mode
+from utils.logger import log_system, log_success
 
 
 async def arm_drone(drone: Drone, force: bool=False):

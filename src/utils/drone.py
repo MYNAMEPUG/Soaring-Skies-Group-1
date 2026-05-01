@@ -4,11 +4,11 @@ from pymavlink import mavutil
 from pymavlink.dialects.v20 import common
 
 # util imports
-from src.utils.messages import MessageStream
-from src.utils.logger import bcolors, log_system
+from utils.messages import MessageStream
+from utils.logger import bcolors, log_system
 
 # etc imports
-from src.helper.file_read import read_config_file
+from helper.file_read import read_config_file
 from typing import TypedDict
 
 class HomePosition(TypedDict):

@@ -4,10 +4,9 @@ import subprocess
 import sys
 import asyncio
 
-from utils.config import Config
-from utils.distance import GPSData
-from src.utils.logger import log_message
-from src.utils.survey import get_centroid, is_point_in_airdrop
+
+from utils.logger import log_message
+from utils.survey import get_centroid, is_point_in_airdrop
 
 """
 0: person

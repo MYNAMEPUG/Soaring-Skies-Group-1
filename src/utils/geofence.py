@@ -1,8 +1,8 @@
 from pymavlink.dialects.v20 import common
 
-from src.helper.file_read import read_geofence
-from src.utils.drone import Drone
-from src.utils.logger import log_custom
+from helper.file_read import read_geofence
+from utils.drone import Drone
+from utils.logger import log_custom
 
 
 class Geofence:
