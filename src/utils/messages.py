@@ -10,6 +10,7 @@ class MessageStream:
     def __init__(self, connection: mavutil.mavfile):
         self.important_messages = None
         self.stored_messages: dict[str, asyncio.Future] = {}
+        self.cached_messages: dict[str, any] = {}
         self.connection = connection
         log_system(msg="Initializing Message Stream")
         self.stream = asyncio.Queue()
@@ -18,7 +19,7 @@ class MessageStream:
 
         pass
 
-    def initialize_important_messages(self, file='info_files/important_messages.txt'):
+    def initialize_important_messages(self, file='files/important_messages.txt'):
         """Stores all important messages to a list. When a message is received it is compared to the elements of the array, and if the message names match,
         then the message is stored """
         if not self.connection is None:
@@ -130,6 +131,10 @@ class MessageStream:
     # stored_messages dictionary, and once the result of the future is set by the message handler in handle_message(), it returns the message
     async def wait_for_message(self, *msgs, secondary=None):
         for msg in msgs:
+            if msg not in ('COMMAND_ACK', 'MISSION_ACK', 'MISSION_REQUEST', 'MISSION_REQUEST_INT'):
+                if msg in self.cached_messages:
+                    return self.cached_messages.pop(msg)
+
             future = asyncio.get_running_loop().create_future()
             # print(f'msg = {msg}')
             # if self.important_messages.__contains__(msg):
@@ -169,7 +174,7 @@ class MessageStream:
                             await asyncio.sleep(1)
                             await self.handle_message(msg=msg)
                         else:
-                            log_system(color=bcolors.FAIL,msg=f"Dropped message {msg.msgname} — no listener found")
+                            log_system(color=bcolors.FAIL, msg=f"Dropped message {msg.msgname} — no listener found")
                 except KeyError:
                     print("Key Error")
                     pass
@@ -186,14 +191,13 @@ class MessageStream:
                     print("Key Error")
                     pass
             else:
-                # print(f'Stored {msg.msgname}')
+                # For messages that don't have command attribute (like HEARTBEAT, GLOBAL_POSITION_INT, etc)
                 try:
-                    if f'{msg.msgname}.{msg.command}' in self.stored_messages:
-                        if not self.stored_messages[f'{msg.msgname}'].done():
-                            self.stored_messages[f'{msg.msgname}'].set_result(msg)
+                    key = msg.msgname
+                    if key in self.stored_messages and not self.stored_messages[key].done():
+                        self.stored_messages[key].set_result(msg)
                     else:
-                        await asyncio.sleep(1)
-                        await self.handle_message(msg=msg)
+                        self.cached_messages[key] = msg # Message received but no listener
                 except KeyError:
                     print("Key Error")
                     pass

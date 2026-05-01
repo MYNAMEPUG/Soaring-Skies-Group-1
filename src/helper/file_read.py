@@ -9,7 +9,8 @@ def read_config_file(file = 'info_files/config.txt'):
             if read.__contains__('#'): # allows files to have comments
                 continue
             read = read.removesuffix('\n').split('=')
-            config[read[0]] = read[1]
+            if len(read) >= 2:
+                config[read[0]] = read[1]
         return config
 
 
@@ -22,12 +23,26 @@ def read_waypoints(file = 'info_files/waypoints.txt'):
             read = f.readline()
             if read == '':
                 break
+            # Skip empty lines
+            if read.strip() == '':
+                continue
             if read == 'feet':
                 feet = True
+                continue
             if read.__contains__('#'):
                 continue
             read = read.removesuffix('\n').split(',')
-            waypoints.append([float(read[0]), float(read[1]), (float(read[2] ) /3.281) if feet else float(read[2])])
+            # Make sure we have all 3 values (lat, lon, alt)
+            if len(read) >= 3:
+                try:
+                    lat = float(read[0].strip())
+                    lon = float(read[1].strip())
+                    alt = float(read[2].strip())
+                    alt = (alt / 3.281) if feet else alt
+                    waypoints.append([lat, lon, alt])
+                except ValueError as e:
+                    print(f"Warning: Skipping invalid waypoint line: {read} - Error: {e}")
+                    continue
 
     return waypoints
 
@@ -38,10 +53,21 @@ def read_geofence(file = 'info_files/fence.txt'):
             read = f.readline()
             if read == '':
                 break
+            # Skip empty lines
+            if read.strip() == '':
+                continue
             if read.__contains__('#'):
                 continue
             read = read.removesuffix('\n').split(',')
-            geofence.append([float(read[0]) ,float(read[1])])
+            # Make sure we have both lat and lon
+            if len(read) >= 2:
+                try:
+                    lat = float(read[0].strip())
+                    lon = float(read[1].strip())
+                    geofence.append([lat, lon])
+                except ValueError as e:
+                    print(f"Warning: Skipping invalid geofence line: {read} - Error: {e}")
+                    continue
 
     return geofence
 
@@ -52,10 +78,14 @@ def file_to_list(file):
             read = f.readline()
             if read == '':
                 return items
+            # Skip empty lines
+            if read.strip() == '':
+                continue
             if read.__contains__("#"):
                 continue
-            read = read.removesuffix('\n')
-            items.append(read)
+            read = read.removesuffix('\n').strip()
+            if read:  # Only add non-empty lines
+                items.append(read)
 
 '''DEPRECATED: Replaced by execute_file in file_controller.py'''
 

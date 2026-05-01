@@ -65,8 +65,7 @@ class Drone:
         self.connection: mavutil.mavtcp = mavutil.mavlink_connection(
             device=connection_string)  # specifying baud rate breaks everything
         self.connection.wait_heartbeat(timeout=10)
-        log_system(
-            msg=f"{bcolors.HEADER} -- Connected to {connection_string} on port {port if port else 'NO PORT'} with system id {self.connection.target_system} and component id {self.connection.target_component} --{bcolors.ENDC}",color=bcolors.SUCCESS)
+        log_system(msg=f"{bcolors.HEADER} Connected to {connection_string} on port {port if port else 'NO PORT'} with system id {self.connection.target_system} and component id {self.connection.target_component}{bcolors.ENDC}",color=bcolors.SUCCESS)
         self.message_stream = MessageStream(self.connection)
         # while True:
         #     print(self.connection.recv_match(blocking=True))

@@ -1,5 +1,6 @@
 # file containing message names of all messages that need to be stored for later inspection
 GLOBAL_POSITION_INT
+GPS_RAW_INT
 MISSION_REQUEST
 MISSION_REQUEST_INT
 MISSION_ACK

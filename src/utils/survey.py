@@ -2,7 +2,7 @@ import math
 import numpy as np
 
 from helper.file_read import read_waypoints
-from utils.logger import log_message
+from utils.logger import log_system,bcolors
 from pymavlink.dialects.v20 import common
 import asyncio
 from utils.drone import Drone
@@ -128,23 +128,24 @@ def generate_survey_waypoints(
     num_pictures = math.ceil(distance / pic_len / (1 - overlap)) + 1
     points = [lerp(start, end, t) for t in np.linspace(0, 1, num_pictures)]
 
-    log_message(f"Generating {num_pictures} survey waypoints")
+    log_system(f"Generating {num_pictures} survey waypoints",msgname='SURVEY',color=bcolors.OKCYAN)
 
     for p in points:
         p["alt"] = survey_alt
 
     return points
 class Survey:
-    def __init__(self,drone: Drone,boundingWaypoints: str = None):
+    def __init__(self, drone: Drone, boundingWaypoints: str = None):
         self.drone = drone
-        self. custom_points= read_waypoints(boundingWaypoints)
-        self.mission_handler=Mission(drone=drone,waypointsFile=boundingWaypoints)
-    async def upload_mission(self, waypoints: list,rtl:bool=True):
-        waypoints = generate_survey_waypoints(self.custom_points,10,0)
-        home_pos=await self.drone.get_home_position_deg()
-        waypoints.append([home_pos['lat'],home_pos['long'],home_pos['alt']])
-        print(f"WAYPOINTS == {waypoints}")
-        await self.mission_handler.upload_mission(waypoints =waypoints,begin_immediately=False,rtl=True)
+        raw_points = read_waypoints(boundingWaypoints)
+        self.custom_points = [{"lat": p[0], "lon": p[1], "alt": p[2], "hdg": 0} for p in raw_points]
+        self.mission_handler = Mission(drone=drone, waypointsFile=boundingWaypoints)
+    async def upload_mission(self, rtl: bool = True):
+        waypoints = generate_survey_waypoints(self.custom_points, 10, 0.7854)
+        home_pos = await self.drone.get_home_position_deg()
+        waypoints_list = [[wp["lat"], wp["lon"], wp["alt"]] for wp in waypoints]
+        waypoints_list.append([home_pos["lat"], home_pos["long"], home_pos["alt"]])
+        await self.mission_handler.upload_mission(waypoints=waypoints_list, begin_immediately=False, rtl=rtl)
         await self.mission_handler.begin_mission(rtl=False)
         if rtl:
             await return_to_launch(self.drone)

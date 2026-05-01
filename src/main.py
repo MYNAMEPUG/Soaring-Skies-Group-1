@@ -14,7 +14,7 @@ from helper.file_read import read_config_file
 async def main():
     drone = Drone()
     drone.initialize_drone(parametersFile='files/settings.txt', configFile='files/config.txt')
-    # mission = Mission(drone=drone, waypointsFile='info_files/waypoints.txt')
+    # mission = Mission(drone=drone, waypointsFile='files/waypoints.txt')
     fence = Geofence(drone=drone, geofenceFile='files/fence.txt')
 
     await asyncio.gather(
@@ -54,7 +54,9 @@ async def mission_picker(drone: Drone):
             missions.append(int(mission_config))
             break
 
-    #circuitTimeTrial = CircuitTimeTrial(drone, 'files/waypoints.txt')
-    #await circuitTimeTrial.upload_mission(rtl=mission_rtl)
-    machine_learning = Survey(drone, 'files/waypoints.txt')
-    await machine_learning.upload_mission(rtl=True)
+    circuitTimeTrial = CircuitTimeTrial(drone, 'files/waypoints.txt')
+    await circuitTimeTrial.upload_mission(rtl=True)
+    #machine_learning = Survey(drone, 'files/waypoints.txt')
+    #await machine_learning.upload_mission(rtl=True)
+if __name__ == "__main__":
+    asyncio.run(main())
