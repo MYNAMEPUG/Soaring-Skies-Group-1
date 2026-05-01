@@ -1,12 +1,13 @@
 import asyncio
 
-from src.utils.drone import Drone
-from src.utils.logger import log_system
-from src.utils.mission import Mission
-from src.utils.takeoff import takeoff
-from src.utils.geofence import Geofence
+from src.utils.circuittimetrial import CircuitTimeTrial
+from utils.drone import Drone
+from utils.logger import log_system
+from utils.mission import Mission
+from utils.takeoff import takeoff
+from utils.geofence import Geofence
 
-from src.helper.file_read import read_config_file
+from helper.file_read import read_config_file
 
 
 
@@ -74,8 +75,8 @@ async def mission_picker(drone: Drone):
             case 0:
                 pass
             case 1:
-                waypointNav = WaypointNavigation(drone, read_file)
-                await waypointNav.upload_mission(rtl=mission_rtl)
-            case 2:
                 circuitTimeTrial = CircuitTimeTrial(drone, read_file)
                 await circuitTimeTrial.upload_mission(rtl=mission_rtl)
+            case 2:
+                machine_learning = survey(drone, read_file)
+                await machine_learning.upload_mission(rtl=mission_rtl)

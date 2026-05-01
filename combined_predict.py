@@ -50,7 +50,7 @@ for result in detector_results:
         x1, y1, x2, y2 = map(int, box.xyxy[0])
 
         pad = 10
-        h, w = img.shape[:2]
+        h, w = img.shape[0],img.shape[1]
 
         x1p = max(0, x1 - pad)
         y1p = max(0, y1 - pad)
