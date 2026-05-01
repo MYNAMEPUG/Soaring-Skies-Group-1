@@ -8,7 +8,7 @@ from utils.takeoff import takeoff
 from utils.geofence import Geofence
 from utils.survey import Survey
 from helper.file_read import read_config_file
-
+from test_motors import test_all_motors_multiple
 
 
 async def main():
